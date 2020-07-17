@@ -13,17 +13,17 @@ and the socound column ascending
 sorter_version = "2020-07-17"
 
 function onEdit(event) {
-    var sheet = event.source.getActiveSheet()
+    let sheet = event.source.getActiveSheet()
     // sheet.getRange("D1").setValue(sheet.getActiveCell().getA1Notation())
-    var formulaRange = sheet.getRange("A1")
-    var [fName, sRange, sOrder] = formulaRange.getValue().split(/[,()]/)
+    let formulaRange = sheet.getRange("A1")
+    let [fName, sRange, sOrder] = formulaRange.getValue().split(/[,()]/)
 
     if (fName == 'autosort') {
         sheet.getRange("B1").setValue(sorter_version)
         colorizeRange2(sheet, sRange)
-        var range = sheet.getRange(sRange)
-        var orders = (sOrder || '+').split("")
-        var sorters = orders.reduce(function (newSorter, symbol, index) {
+        let range = sheet.getRange(sRange)
+        let orders = (sOrder || '+').split("")
+        let sorters = orders.reduce(function (newSorter, symbol, index) {
             return newSorter.concat({ column: index + 1, ascending: symbol == '+' })
         }, [])
         range.sort(sorters)
@@ -40,13 +40,13 @@ function colorizeRange2(sheet, sortRangeString) {
 }
 
 function colorizeRange(range) {
-    var hexa = '0123456789ABCDEF'
-    var r = r16(Math.random() * 16)
-    var g = r16(Math.random() * 16)
-    var b = r16(Math.random() * 16)
+    let hexa = '0123456789ABCDEF'
+    let r = r16(Math.random() * 16)
+    let g = r16(Math.random() * 16)
+    let b = r16(Math.random() * 16)
 
-    var background = '#' + hexa[r] + hexa[g] + hexa[b]
-    var text = '#' + hexa[r16(r - 6)] + hexa[r16(g - 6)] + hexa[r16(b - 6)]
+    let background = '#' + hexa[r] + hexa[g] + hexa[b]
+    let text = '#' + hexa[r16(r - 6)] + hexa[r16(g - 6)] + hexa[r16(b - 6)]
 
     range.setBackground(background)
     range.setFontColor(text)
@@ -57,10 +57,10 @@ function r16(n) {
 }
 
 function logInCell() {
-    var text = ''
-    for (var i = 0; i < arguments.length; i++) {
+    let text = ''
+    for (let i = 0; i < arguments.length; i++) {
         text += text == '' ? arguments[i] : ", " + arguments[i]
     }
-    var logCell = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet().getRange("C1")
+    let logCell = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet().getRange("C1")
     logCell.setValue((logCell.getValue() ? logCell.getValue() + '\n' : '') + text)
 }
