@@ -16,19 +16,17 @@ function onEdit(event) {
     var sheet = event.source.getActiveSheet()
     // sheet.getRange("D1").setValue(sheet.getActiveCell().getA1Notation())
     var formulaRange = sheet.getRange("A1")
-    var parts = formulaRange.getValue().split(/[,()]/)
+    var [fName, sRange, sOrder] = formulaRange.getValue().split(/[,()]/)
 
-    switch (parts[0]) {
-        case 'autosort':
-            sheet.getRange("B1").setValue(sorter_version)
-            colorizeRange2(sheet, parts[1])
-            var range = sheet.getRange(parts[1])
-            var orders = (parts[2] || '+').split("")
-            var sorters = orders.reduce(function (newSorter, symbol, index) {
-                return newSorter.concat({ column: index + 1, ascending: symbol == '+' })
-            }, [])
-            range.sort(sorters)
-            break
+    if (fName == 'autosort') {
+        sheet.getRange("B1").setValue(sorter_version)
+        colorizeRange2(sheet, sRange)
+        var range = sheet.getRange(sRange)
+        var orders = (sOrder || '+').split("")
+        var sorters = orders.reduce(function (newSorter, symbol, index) {
+            return newSorter.concat({ column: index + 1, ascending: symbol == '+' })
+        }, [])
+        range.sort(sorters)
     }
 }
 
