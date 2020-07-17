@@ -10,19 +10,17 @@ and the socound column ascending
 
 */
 
-sorter_version = "2020-07-15 - paint nonsorted"
+sorter_version = "2020-07-17"
 
 function onEdit(event) {
     var sheet = event.source.getActiveSheet()
-
-    sheet.getRange("B1").setValue(sorter_version)
-    sheet.getRange("D1").setValue(sheet.getActiveCell().getA1Notation())
-
+    // sheet.getRange("D1").setValue(sheet.getActiveCell().getA1Notation())
     var formulaRange = sheet.getRange("A1")
     var parts = formulaRange.getValue().split(/[,()]/)
 
     switch (parts[0]) {
         case 'autosort':
+            sheet.getRange("B1").setValue(sorter_version)
             colorizeRange2(sheet, parts[1])
             var range = sheet.getRange(parts[1])
             var orders = (parts[2] || '+').split("")
@@ -40,11 +38,7 @@ function colorizeRange2(sheet, sortRangeString) {
   rowEnd = parseInt(fromTo[0].replace(/[a-zA-Z]+/g,''))-1
   colEnd = fromTo[1].replace(/[0-9]+/,'')
 
-  colorizableRange = "A1:" + colEnd + rowEnd
-
-  // sheet.getRange("D1").setValue("debug: " + colorizableRange)
-
-  colorizeRange(sheet.getRange(colorizableRange))
+  colorizeRange(sheet.getRange("A1:" + colEnd + rowEnd))
 }
 
 function colorizeRange(range) {
