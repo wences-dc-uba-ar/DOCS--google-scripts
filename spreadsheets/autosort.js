@@ -1,6 +1,11 @@
 /*
 
-TODO: add documentation
+TODO:
+- add timestamp if there is a column 'updated'
+- auto expand sheet to fit range
+- auto shrink sheet to range if the rest is empty
+- add neutral sort direction 0 to exclude cells from ordering (ie: 0+-0+)
+- add documentation
 
 Adding in cell A1:
 autosort(A3:E50,-+)
@@ -10,7 +15,7 @@ and the socound column ascending
 
 */
 
-sorter_version = "2020-07-17"
+sorter_version = "2020-07-18"
 
 function onEdit(event) {
     let sheet = event.source.getActiveSheet()
