@@ -21,7 +21,6 @@ function onEdit(event) {
     let [fName, sRange, sOrder] = formulaRange.getValue().split(/[,()]/)
 
     if (fName == 'autosort') {
-        colorizeRange2(sheet, sRange)
         let range = sheet.getRange(sRange)
         update_timestamp(sheet, range)
         let orders = (sOrder || '+').split("")
@@ -33,15 +32,6 @@ function onEdit(event) {
         }, [])
         range.sort(sorters)
     }
-}
-
-function colorizeRange2(sheet, sortRangeString) {
-
-  fromTo = sortRangeString.split(':')
-  rowEnd = parseInt(fromTo[0].replace(/[a-zA-Z]+/g,''))-1
-  colEnd = fromTo[1].replace(/[0-9]+/,'')
-
-  colorizeRange(sheet.getRange("A1:" + colEnd + rowEnd))
 }
 
 function colorizeRange(range) {
@@ -75,5 +65,6 @@ function set_mtime(sheet, y) {
     let x = sheet.getCurrentCell().getRow()
     let tzoffset = (new Date()).getTimezoneOffset() * 60000;
     let timeString = (new Date(Date.now() - tzoffset)).toISOString().slice(0, -8).replace('T', ' ')
-    sheet.getRange(x,y).setValue(timeString)
+    range = sheet.getRange(x,y).setValue(timeString)
+    colorizeRange(range)
 }
