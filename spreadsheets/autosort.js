@@ -18,22 +18,19 @@ sorter_version = "2020-07-18"
 
 function onEdit(event) {
     let sheet = event.source.getActiveSheet()
-    // sheet.getRange("D1").setValue(sheet.getActiveCell().getA1Notation())
     let formulaRange = sheet.getRange("A1")
     let [fName, sRange, sOrder] = formulaRange.getValue().split(/[,()]/)
 
     if (fName == 'autosort') {
-        sheet.getRange("B1").setValue(sorter_version)
         colorizeRange2(sheet, sRange)
         let range = sheet.getRange(sRange)
         let orders = (sOrder || '+').split("")
         let sorters = orders.reduce(function (newSorter, symbol, index) {
             if ('-+'.includes(symbol)) {
-            return newSorter.concat({ column: index + 1, ascending: symbol == '+' })
+                return newSorter.concat({ column: index + 1, ascending: symbol == '+' })
             }
             return newSorter
         }, [])
-        Logger.log(sorters)
         range.sort(sorters)
     }
 }
@@ -62,13 +59,4 @@ function colorizeRange(range) {
 
 function r16(n) {
     return (Math.floor(n) % 16 + 16) % 16
-}
-
-function logInCell() {
-    let text = ''
-    for (let i = 0; i < arguments.length; i++) {
-        text += text == '' ? arguments[i] : ", " + arguments[i]
-    }
-    let logCell = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet().getRange("C1")
-    logCell.setValue((logCell.getValue() ? logCell.getValue() + '\n' : '') + text)
 }
