@@ -4,7 +4,6 @@ TODO:
 - add timestamp if there is a column 'updated'
 - auto expand sheet to fit range
 - auto shrink sheet to range if the rest is empty
-- add neutral sort direction 0 to exclude cells from ordering (ie: 0+-0+)
 - add documentation
 
 Adding in cell A1:
@@ -29,8 +28,12 @@ function onEdit(event) {
         let range = sheet.getRange(sRange)
         let orders = (sOrder || '+').split("")
         let sorters = orders.reduce(function (newSorter, symbol, index) {
+            if ('-+'.includes(symbol)) {
             return newSorter.concat({ column: index + 1, ascending: symbol == '+' })
+            }
+            return newSorter
         }, [])
+        Logger.log(sorters)
         range.sort(sorters)
     }
 }
