@@ -34,37 +34,70 @@ function onEdit(event) {
     }
 }
 
-function colorizeRange(range) {
-    let hexa = '0123456789ABCDEF'
-    let r = r16(Math.random() * 16)
-    let g = r16(Math.random() * 16)
-    let b = r16(Math.random() * 16)
-
-    let background = '#' + hexa[r] + hexa[g] + hexa[b]
-    let text = '#' + hexa[r16(r - 6)] + hexa[r16(g - 6)] + hexa[r16(b - 6)]
-
-    range.setBackground(background)
-    range.setFontColor(text)
-}
-
-function r16(n) {
-    return (Math.floor(n) % 16 + 16) % 16
-}
-
 
 function update_timestamp(sheet, sortRange) {
     let titles = sheet.getRange(sortRange.getRow() - 1, sortRange.getColumn(), 1, sortRange.getWidth()).getValues()
     for (var i in titles[0]) {
         if(titles[0][i].toLowerCase() == 'updated') {
-            set_mtime(sheet, parseInt(i)+1)
+            let updatedColumn = parseInt(i)+1
+            let editedRow = sheet.getCurrentCell().getRow()
+            set_mtime(sheet, editedRow, updatedColumn)
+            fadeColors(sheet, sortRange, editedRow, updatedColumn)
         }
     }
 }
 
-function set_mtime(sheet, y) {
-    let x = sheet.getCurrentCell().getRow()
+function set_mtime(sheet, editedRow, updatedColumn) {
     let tzoffset = (new Date()).getTimezoneOffset() * 60000;
     let timeString = (new Date(Date.now() - tzoffset)).toISOString().slice(0, -8).replace('T', ' ')
-    range = sheet.getRange(x,y).setValue(timeString)
-    colorizeRange(range)
+    range = sheet.getRange(editedRow, updatedColumn).setValue(timeString)
+}
+
+function fadeColors(sheet, sortRange, editedRow, updatedColumn) {
+    updatedRange = sheet.getRange(sortRange.getRow(), updatedColumn, sortRange.getHeight(),1)
+    fadeout(sheet, updatedRange)
+
+    updatedRow = sheet.getRange(editedRow, updatedColumn)
+
+    updatedRow.setBackground('#000')
+    updatedRow.setFontColor('#FFF')
+}
+
+
+function fadeout(sheet, range) {
+    // FIXME: estos loops son muy lentos, buscar otra manera
+    let backgrounds = range.getBackgrounds()
+    for (var i in backgrounds) {
+        for (var j in backgrounds[i]) {
+            color = backgrounds[i][j]
+            if(color!='#ffffff') {
+                r = addHexa(color[1], +2)
+                g = addHexa(color[3], +2)
+                b = addHexa(color[5], +2)
+                sheet.getRange(range.getRow()+parseInt(i), range.getColumn()+parseInt(j)).setBackground(`#${r}${g}${b}`)
+            }
+        }
+    }
+    let fontColors = range.getFontColors()
+    for (var i in fontColors) {
+        for (var j in fontColors[i]) {
+            color = fontColors[i][j]
+            if(color!='#000000') {
+                r = addHexa(color[1], -2)
+                g = addHexa(color[3], -2)
+                b = addHexa(color[5], -2)
+                sheet.getRange(range.getRow()+parseInt(i), range.getColumn()+parseInt(j)).setFontColor(`#${r}${g}${b}`)
+            }
+        }
+    }
+}
+
+function addHexa(h, i) {
+    let hexa = '0123456789ABCDEF'
+    n = hexa.indexOf(h.toUpperCase()) + i
+
+    n = Math.max(0,n)
+    n = Math.min(15,n)
+
+    return hexa[n]
 }
