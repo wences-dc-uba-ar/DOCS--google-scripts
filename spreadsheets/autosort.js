@@ -13,7 +13,7 @@ and the socound column ascending
 
 */
 
-sorter_version = "2020-07-18"
+sorter_version = "2020-07-27"
 
 function onEdit(event) {
     let sheet = event.source.getActiveSheet()
@@ -67,6 +67,7 @@ function fadeColors(sheet, sortRange, editedRow, updatedColumn) {
 function fadeout(sheet, range) {
     // FIXME: estos loops son muy lentos, buscar otra manera
     let backgrounds = range.getBackgrounds()
+    let fontColors = range.getFontColors()
     for (var i in backgrounds) {
         for (var j in backgrounds[i]) {
             color = backgrounds[i][j]
@@ -75,17 +76,10 @@ function fadeout(sheet, range) {
                 g = addHexa(color[3], +2)
                 b = addHexa(color[5], +2)
                 sheet.getRange(range.getRow()+parseInt(i), range.getColumn()+parseInt(j)).setBackground(`#${r}${g}${b}`)
-            }
-        }
-    }
-    let fontColors = range.getFontColors()
-    for (var i in fontColors) {
-        for (var j in fontColors[i]) {
-            color = fontColors[i][j]
-            if(color!='#000000') {
-                r = addHexa(color[1], -2)
-                g = addHexa(color[3], -2)
-                b = addHexa(color[5], -2)
+                fontColor = fontColors[i][j]
+                r = addHexa(fontColor[1], -2)
+                g = addHexa(fontColor[3], -2)
+                b = addHexa(fontColor[5], -2)
                 sheet.getRange(range.getRow()+parseInt(i), range.getColumn()+parseInt(j)).setFontColor(`#${r}${g}${b}`)
             }
         }
